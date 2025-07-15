@@ -35,6 +35,12 @@ send_slack() {
 
 case "$1" in
   setup)
+    if [ -f "$CONFIG_FILE" ]; then
+      echo "WARNING: $CONFIG_FILE already exists. Running setup will overwrite your existing configuration." >&2
+      echo "If you want to make changes, consider editing $CONFIG_FILE directly instead." >&2
+      read -p "Continue and overwrite? (y/N): " confirm
+      [[ ! "$confirm" =~ ^[Yy]$ ]] && { echo "Aborting setup."; exit 1; }
+    fi
     echo "Select notification services (comma separated, e.g. 1,3,5):"
     echo "  1. Discord"
     echo "  2. Telegram"
@@ -74,8 +80,9 @@ case "$1" in
           ;;
       esac
     done
-    # Write a single correct NOTIFY_TYPES line
-    echo -e "NOTIFY_TYPES=( ${types[@]} )\n$config" | sudo tee "$CONFIG_FILE"
+    # Write a template with commented sections for all media types
+    template="# D.O.N.E.D. Notification Config\n\n# NOTIFY_TYPES: List of enabled services\nNOTIFY_TYPES=( ${types[@]} )\n\n## Discord\n# WEBHOOK_URL=\"https://discord.com/api/webhooks/xxx/yyy\"\n$([ " ${types[@]} " =~ " discord " ] && echo "WEBHOOK_URL=\"$url\"")\n\n## Telegram\n# TELEGRAM_BOT_TOKEN=\"123456:ABC-DEF\"\n# TELEGRAM_CHAT_ID=\"987654321\"\n$([ " ${types[@]} " =~ " telegram " ] && echo -e "TELEGRAM_BOT_TOKEN=\"$token\"\nTELEGRAM_CHAT_ID=\"$chatid\"")\n\n## Google Chats\n# GOOGLE_CHATS_WEBHOOK_URL=\"https://chat.googleapis.com/v1/spaces/...\"\n$([ " ${types[@]} " =~ " googlechats " ] && echo "GOOGLE_CHATS_WEBHOOK_URL=\"$url\"")\n\n## Microsoft Teams\n# TEAMS_WEBHOOK_URL=\"https://outlook.office.com/webhook/...\"\n$([ " ${types[@]} " =~ " teams " ] && echo "TEAMS_WEBHOOK_URL=\"$url\"")\n\n## Slack\n# SLACK_WEBHOOK_URL=\"https://hooks.slack.com/services/...\"\n$([ " ${types[@]} " =~ " slack " ] && echo "SLACK_WEBHOOK_URL=\"$url\"")\n"
+    echo -e "$template" | sudo tee "$CONFIG_FILE"
     echo "Config saved to $CONFIG_FILE."
     ;;
   test)
