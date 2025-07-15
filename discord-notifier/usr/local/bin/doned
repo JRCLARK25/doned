@@ -43,7 +43,7 @@ case "$1" in
     echo "  5. Slack"
     read -p "Enter numbers: " service_nums
     types=()
-    config="NOTIFY_TYPES=()\n"
+    config=""
     for num in $(echo $service_nums | tr ',' ' '); do
       case "$num" in
         2)
@@ -74,8 +74,8 @@ case "$1" in
           ;;
       esac
     done
-    config="NOTIFY_TYPES=(${types[@]})\n$config"
-    echo -e "$config" | sudo tee "$CONFIG_FILE"
+    # Write a single correct NOTIFY_TYPES line
+    echo -e "NOTIFY_TYPES=( ${types[@]} )\n$config" | sudo tee "$CONFIG_FILE"
     echo "Config saved to $CONFIG_FILE."
     ;;
   test)
@@ -84,25 +84,27 @@ case "$1" in
       exit 1
     fi
     source "$CONFIG_FILE"
+    # Parse array for bash
+    eval "types=\"${NOTIFY_TYPES[@]}\""
     msg="🚀 D.O.N.E.D. test notification from $(hostname)"
     if [ -n "$2" ]; then
       type="$2"
       case "$type" in
-        discord) send_discord "$msg" ;;
-        telegram) send_telegram "$msg" ;;
-        googlechats) send_googlechats "$msg" ;;
-        teams) send_teams "$msg" ;;
-        slack) send_slack "$msg" ;;
+        discord) "$NOTIFY_SCRIPT" "$msg" ;;
+        telegram) curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" -d chat_id="$TELEGRAM_CHAT_ID" -d text="$msg" > /dev/null ;;
+        googlechats) curl -s -H "Content-Type: application/json" -X POST -d "{\"text\":\"$msg\"}" "$GOOGLE_CHATS_WEBHOOK_URL" > /dev/null ;;
+        teams) curl -s -H "Content-Type: application/json" -X POST -d "{\"text\":\"$msg\"}" "$TEAMS_WEBHOOK_URL" > /dev/null ;;
+        slack) curl -s -H "Content-Type: application/json" -X POST -d "{\"text\":\"$msg\"}" "$SLACK_WEBHOOK_URL" > /dev/null ;;
         *) echo "Unknown type: $type"; exit 1 ;;
       esac
     else
       for type in "${NOTIFY_TYPES[@]}"; do
         case "$type" in
-          discord) send_discord "$msg" ;;
-          telegram) send_telegram "$msg" ;;
-          googlechats) send_googlechats "$msg" ;;
-          teams) send_teams "$msg" ;;
-          slack) send_slack "$msg" ;;
+          discord) "$NOTIFY_SCRIPT" "$msg" ;;
+          telegram) curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" -d chat_id="$TELEGRAM_CHAT_ID" -d text="$msg" > /dev/null ;;
+          googlechats) curl -s -H "Content-Type: application/json" -X POST -d "{\"text\":\"$msg\"}" "$GOOGLE_CHATS_WEBHOOK_URL" > /dev/null ;;
+          teams) curl -s -H "Content-Type: application/json" -X POST -d "{\"text\":\"$msg\"}" "$TEAMS_WEBHOOK_URL" > /dev/null ;;
+          slack) curl -s -H "Content-Type: application/json" -X POST -d "{\"text\":\"$msg\"}" "$SLACK_WEBHOOK_URL" > /dev/null ;;
         esac
       done
     fi
