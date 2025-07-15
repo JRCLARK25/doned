@@ -1,0 +1,5 @@
+#!/bin/bash
+# Ensure /usr/local/bin is in PATH for all users
+if ! grep -q '/usr/local/bin' /etc/profile; then
+  echo 'export PATH="/usr/local/bin:$PATH"' >> /etc/profile
+fi

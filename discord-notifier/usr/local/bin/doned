@@ -1,0 +1,170 @@
+#!/bin/bash
+CONFIG_FILE="/etc/done.conf"
+NOTIFY_SCRIPT="/usr/local/bin/notify-discord"
+
+function usage() {
+  echo "D.O.N.E. - Discord & Others Notification Engine"
+  echo "Usage: doned <command> [type]"
+  echo "Commands:"
+  echo "  setup   - Configure one or more notification services"
+  echo "  test    - Send a test notification to all or a specific type"
+  echo "  status  - Show config and webhook/token status"
+  echo "  <type>  - Send a notification to a specific type (discord, telegram, googlechats, teams, slack)"
+}
+
+send_discord() {
+  "$NOTIFY_SCRIPT" "$1"
+}
+send_telegram() {
+  curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+    -d chat_id="$TELEGRAM_CHAT_ID" \
+    -d text="$1" > /dev/null
+}
+send_googlechats() {
+  curl -s -H "Content-Type: application/json" -X POST \
+    -d "{\"text\":\"$1\"}" "$GOOGLE_CHATS_WEBHOOK_URL" > /dev/null
+}
+send_teams() {
+  curl -s -H "Content-Type: application/json" -X POST \
+    -d "{\"text\":\"$1\"}" "$TEAMS_WEBHOOK_URL" > /dev/null
+}
+send_slack() {
+  curl -s -H "Content-Type: application/json" -X POST \
+    -d "{\"text\":\"$1\"}" "$SLACK_WEBHOOK_URL" > /dev/null
+}
+
+case "$1" in
+  setup)
+    echo "Select notification services (comma separated, e.g. 1,3,5):"
+    echo "  1. Discord"
+    echo "  2. Telegram"
+    echo "  3. Google Chats"
+    echo "  4. Microsoft Teams"
+    echo "  5. Slack"
+    read -p "Enter numbers: " service_nums
+    types=()
+    config="NOTIFY_TYPES=()\n"
+    for num in $(echo $service_nums | tr ',' ' '); do
+      case "$num" in
+        2)
+          types+=(telegram)
+          read -p "Enter your Telegram Bot Token: " token
+          read -p "Enter your Telegram Chat ID: " chatid
+          config+="TELEGRAM_BOT_TOKEN=\"$token\"\nTELEGRAM_CHAT_ID=\"$chatid\"\n"
+          ;;
+        3)
+          types+=(googlechats)
+          read -p "Enter your Google Chat Webhook URL: " url
+          config+="GOOGLE_CHATS_WEBHOOK_URL=\"$url\"\n"
+          ;;
+        4)
+          types+=(teams)
+          read -p "Enter your Microsoft Teams Webhook URL: " url
+          config+="TEAMS_WEBHOOK_URL=\"$url\"\n"
+          ;;
+        5)
+          types+=(slack)
+          read -p "Enter your Slack Webhook URL: " url
+          config+="SLACK_WEBHOOK_URL=\"$url\"\n"
+          ;;
+        *)
+          types+=(discord)
+          read -p "Enter your Discord webhook URL: " url
+          config+="WEBHOOK_URL=\"$url\"\n"
+          ;;
+      esac
+    done
+    config="NOTIFY_TYPES=(${types[@]})\n$config"
+    echo -e "$config" | sudo tee "$CONFIG_FILE"
+    echo "Config saved to $CONFIG_FILE."
+    ;;
+  test)
+    if [ ! -f "$CONFIG_FILE" ]; then
+      echo "Config file $CONFIG_FILE not found. Run 'doned setup' first."
+      exit 1
+    fi
+    source "$CONFIG_FILE"
+    msg="🚀 D.O.N.E.D. test notification from $(hostname)"
+    if [ -n "$2" ]; then
+      type="$2"
+      case "$type" in
+        discord) send_discord "$msg" ;;
+        telegram) send_telegram "$msg" ;;
+        googlechats) send_googlechats "$msg" ;;
+        teams) send_teams "$msg" ;;
+        slack) send_slack "$msg" ;;
+        *) echo "Unknown type: $type"; exit 1 ;;
+      esac
+    else
+      for type in "${NOTIFY_TYPES[@]}"; do
+        case "$type" in
+          discord) send_discord "$msg" ;;
+          telegram) send_telegram "$msg" ;;
+          googlechats) send_googlechats "$msg" ;;
+          teams) send_teams "$msg" ;;
+          slack) send_slack "$msg" ;;
+        esac
+      done
+    fi
+    ;;
+  status)
+    if [ -f "$CONFIG_FILE" ]; then
+      echo "Config file $CONFIG_FILE exists."
+      source "$CONFIG_FILE"
+      echo "NOTIFY_TYPES: ${NOTIFY_TYPES[@]}"
+      for type in "${NOTIFY_TYPES[@]}"; do
+        case "$type" in
+          discord) echo "WEBHOOK_URL: $WEBHOOK_URL" ;;
+          telegram) echo "TELEGRAM_BOT_TOKEN: $TELEGRAM_BOT_TOKEN"; echo "TELEGRAM_CHAT_ID: $TELEGRAM_CHAT_ID" ;;
+          googlechats) echo "GOOGLE_CHATS_WEBHOOK_URL: $GOOGLE_CHATS_WEBHOOK_URL" ;;
+          teams) echo "TEAMS_WEBHOOK_URL: $TEAMS_WEBHOOK_URL" ;;
+          slack) echo "SLACK_WEBHOOK_URL: $SLACK_WEBHOOK_URL" ;;
+        esac
+      done
+    else
+      echo "Config file $CONFIG_FILE not found."
+    fi
+    ;;
+  discord|telegram|googlechats|teams|slack)
+    if [ ! -f "$CONFIG_FILE" ]; then
+      echo "Config file $CONFIG_FILE not found. Run 'doned setup' first."
+      exit 1
+    fi
+    source "$CONFIG_FILE"
+    shift
+    msg="$*"
+    if [ -z "$msg" ]; then
+      msg="✅ D.O.N.E.D. notification from $(hostname)"
+    fi
+    case "$1" in
+      discord) send_discord "$msg" ;;
+      telegram) send_telegram "$msg" ;;
+      googlechats) send_googlechats "$msg" ;;
+      teams) send_teams "$msg" ;;
+      slack) send_slack "$msg" ;;
+    esac
+    ;;
+  ""|help|--help|-h)
+    usage
+    ;;
+  *)
+    if [ ! -f "$CONFIG_FILE" ]; then
+      echo "Config file $CONFIG_FILE not found. Run 'doned setup' first."
+      exit 1
+    fi
+    source "$CONFIG_FILE"
+    msg="$*"
+    if [ -z "$msg" ]; then
+      msg="✅ D.O.N.E.D. notification from $(hostname)"
+    fi
+    for type in "${NOTIFY_TYPES[@]}"; do
+      case "$type" in
+        discord) send_discord "$msg" ;;
+        telegram) send_telegram "$msg" ;;
+        googlechats) send_googlechats "$msg" ;;
+        teams) send_teams "$msg" ;;
+        slack) send_slack "$msg" ;;
+      esac
+    done
+    ;;
+esac

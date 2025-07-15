@@ -1,0 +1,7 @@
+Package: doned
+Version: 1.0
+Section: utils
+Priority: optional
+Architecture: all
+Maintainer: Your Name <you@example.com>
+Description: D.O.N.E.D. (Discord & Others Notification Engine Daemon) - CLI utility for sending notifications to Discord and other services from shell scripts
