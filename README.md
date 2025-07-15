@@ -64,7 +64,17 @@ sleep 3 && doned
 ```
 D.O.N.E.D. will send a notification to all configured services:
 ```
-✅ Your command 'sleep 3' has completed on <hostname>
+✅ Your command has finished on <hostname>
+```
+
+You can also pass a variable or message:
+```bash
+sleep 3 && doned "test01"
+```
+This will send:
+```
+✅ Your command has finished on <hostname>
+test01
 ```
 
 ### Test Notifications
@@ -113,7 +123,7 @@ To build the `.deb` and `.rpm` packages yourself, see the `doned.spec` and `disc
 
 ## Changelog
 
-- Default: running `doned` sends a notification with the last command and hostname
+- Default: running `doned` sends a notification with a default message and optional variable
 - Fixed NOTIFY_TYPES array and config writing
 - `doned test` and `doned status` now work for all types
 - Rebuilt `.deb` and `.rpm` packages

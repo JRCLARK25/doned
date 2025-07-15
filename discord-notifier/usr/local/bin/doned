@@ -162,9 +162,10 @@ case "$1" in
       exit 1
     fi
     source "$CONFIG_FILE"
-    # Get the last command from history
-    last_cmd=$(history | tail -n 2 | head -n 1 | sed 's/^ *[0-9]* *//')
-    msg="✅ Your command '$last_cmd' has completed on $(hostname)"
+    msg="✅ Your command has finished on $(hostname)"
+    if [ -n "$2" ]; then
+      msg="$msg\n$2"
+    fi
     for type in "${NOTIFY_TYPES[@]}"; do
       case "$type" in
         discord) "$NOTIFY_SCRIPT" "$msg" ;;
