@@ -1,0 +1,6 @@
+# Ignore build and packaging output
+rpmbuild/
+discord-notifier/
+*.deb
+*.rpm
+!binaries/
