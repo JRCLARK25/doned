@@ -3,4 +3,5 @@ rpmbuild/
 discord-notifier/
 *.deb
 *.rpm
-!binaries/
+!binaries/*.deb
+!binaries/*.rpm
