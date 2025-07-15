@@ -56,6 +56,17 @@ doned discord "Message for Discord only"
 doned telegram "Message for Telegram only"
 ```
 
+### Default Notification Behavior
+
+If you run a command like:
+```bash
+sleep 3 && doned
+```
+D.O.N.E.D. will send a notification to all configured services:
+```
+✅ Your command 'sleep 3' has completed on <hostname>
+```
+
 ### Test Notifications
 
 Send a test notification to all configured services:
@@ -82,6 +93,7 @@ doned status
 Configuration is stored in `/etc/done.conf` and includes:
 - NOTIFY_TYPES: Array of enabled services
 - Service-specific tokens/URLs
+- Commented template sections for all supported services
 
 Example:
 ```bash
@@ -101,6 +113,7 @@ To build the `.deb` and `.rpm` packages yourself, see the `doned.spec` and `disc
 
 ## Changelog
 
+- Default: running `doned` sends a notification with the last command and hostname
 - Fixed NOTIFY_TYPES array and config writing
 - `doned test` and `doned status` now work for all types
 - Rebuilt `.deb` and `.rpm` packages
