@@ -77,6 +77,8 @@ This will send:
 test01
 ```
 
+**Note:** Telegram notifications now send both lines as a single message, preserving newlines.
+
 ### Test Notifications
 
 Send a test notification to all configured services:
@@ -123,6 +125,7 @@ To build the `.deb` and `.rpm` packages yourself, see the `doned.spec` and `disc
 
 ## Changelog
 
+- Telegram: notifications now send both lines as a single message
 - Default: running `doned` sends a notification with a default message and optional variable
 - Fixed NOTIFY_TYPES array and config writing
 - `doned test` and `doned status` now work for all types
@@ -134,3 +137,6 @@ To build the `.deb` and `.rpm` packages yourself, see the `doned.spec` and `disc
 ## License
 
 MIT
+## Binaries rebuilt on Manjaro
+
+The .deb and .rpm packages have been rebuilt. See binaries/ for details.
