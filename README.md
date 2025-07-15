@@ -1,4 +1,4 @@
-# D.O.N.E.D. — Discord & Others Notification Engine Daemon
+# D.O.N.E.D. — Discord & Others Notification Engine Damnit
 
 D.O.N.E.D. is a simple, extensible CLI utility for sending notifications from shell scripts to Discord, Telegram, Google Chats, Microsoft Teams, and Slack. It’s packaged for easy installation as both `.deb` and `.rpm`.
 
@@ -135,8 +135,4 @@ To build the `.deb` and `.rpm` packages yourself, see the `doned.spec` and `disc
 ---
 
 ## License
-
-MIT
-## Binaries rebuilt on Manjaro
-
-The .deb and .rpm packages have been rebuilt. See binaries/ for details.
+GNU General Public License v2.0 
