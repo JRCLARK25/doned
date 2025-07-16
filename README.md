@@ -25,9 +25,25 @@ Download the latest `.deb` or `.rpm` from the `binaries/` directory.
 sudo dpkg -i binaries/doned.deb
 ```
 
-**RHEL/Fedora/Manjaro:**
+**RHEL/Fedora/Rocky/SLES/OpenSuSe/Etc.:**
 ```bash
 sudo rpm -i binaries/doned.rpm
+```
+
+---
+
+**Arch/Manjaro (AUR)**
+
+
+Clone the AUR directory and run `makepkg`:
+```bash
+cd aur
+makepkg -si
+```
+
+Or use an AUR helper (e.g. yay):
+```bash
+yay -S doned
 ```
 
 ---
@@ -77,7 +93,6 @@ This will send:
 test01
 ```
 
-**Note:** Telegram notifications now send both lines as a single message, preserving newlines.
 
 ### Test Notifications
 
@@ -135,4 +150,4 @@ To build the `.deb` and `.rpm` packages yourself, see the `doned.spec` and `disc
 ---
 
 ## License
-GNU General Public License v2.0 
+GNU General Public License v2.0

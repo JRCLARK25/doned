@@ -18,7 +18,7 @@ send_discord() {
 send_telegram() {
   curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
     -d chat_id="$TELEGRAM_CHAT_ID" \
-    -d text="$1" > /dev/null
+    -d "text=$1" > /dev/null
 }
 send_googlechats() {
   curl -s -H "Content-Type: application/json" -X POST \
@@ -98,7 +98,7 @@ case "$1" in
       type="$2"
       case "$type" in
         discord) "$NOTIFY_SCRIPT" "$msg" ;;
-        telegram) curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" -d chat_id="$TELEGRAM_CHAT_ID" -d text="$msg" > /dev/null ;;
+        telegram) curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" -d chat_id="$TELEGRAM_CHAT_ID" -d "text=$msg" > /dev/null ;;
         googlechats) curl -s -H "Content-Type: application/json" -X POST -d "{\"text\":\"$msg\"}" "$GOOGLE_CHATS_WEBHOOK_URL" > /dev/null ;;
         teams) curl -s -H "Content-Type: application/json" -X POST -d "{\"text\":\"$msg\"}" "$TEAMS_WEBHOOK_URL" > /dev/null ;;
         slack) curl -s -H "Content-Type: application/json" -X POST -d "{\"text\":\"$msg\"}" "$SLACK_WEBHOOK_URL" > /dev/null ;;
@@ -108,7 +108,7 @@ case "$1" in
       for type in "${NOTIFY_TYPES[@]}"; do
         case "$type" in
           discord) "$NOTIFY_SCRIPT" "$msg" ;;
-          telegram) curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" -d chat_id="$TELEGRAM_CHAT_ID" -d text="$msg" > /dev/null ;;
+          telegram) curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" -d chat_id="$TELEGRAM_CHAT_ID" -d "text=$msg" > /dev/null ;;
           googlechats) curl -s -H "Content-Type: application/json" -X POST -d "{\"text\":\"$msg\"}" "$GOOGLE_CHATS_WEBHOOK_URL" > /dev/null ;;
           teams) curl -s -H "Content-Type: application/json" -X POST -d "{\"text\":\"$msg\"}" "$TEAMS_WEBHOOK_URL" > /dev/null ;;
           slack) curl -s -H "Content-Type: application/json" -X POST -d "{\"text\":\"$msg\"}" "$SLACK_WEBHOOK_URL" > /dev/null ;;
@@ -169,7 +169,7 @@ case "$1" in
     for type in "${NOTIFY_TYPES[@]}"; do
       case "$type" in
         discord) "$NOTIFY_SCRIPT" "$msg" ;;
-        telegram) curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" -d chat_id="$TELEGRAM_CHAT_ID" -d text="$msg" > /dev/null ;;
+        telegram) curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" -d chat_id="$TELEGRAM_CHAT_ID" -d "text=$msg" > /dev/null ;;
         googlechats) curl -s -H "Content-Type: application/json" -X POST -d "{\"text\":\"$msg\"}" "$GOOGLE_CHATS_WEBHOOK_URL" > /dev/null ;;
         teams) curl -s -H "Content-Type: application/json" -X POST -d "{\"text\":\"$msg\"}" "$TEAMS_WEBHOOK_URL" > /dev/null ;;
         slack) curl -s -H "Content-Type: application/json" -X POST -d "{\"text\":\"$msg\"}" "$SLACK_WEBHOOK_URL" > /dev/null ;;
