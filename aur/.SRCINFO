@@ -1,0 +1,19 @@
+# Maintainer: Your Name <your.email@example.com>
+
+pkgname=doned
+gitname=doned
+pkgver=1.0
+pkgrel=1
+pkgdesc="Discord & Others Notification Engine Damnit (D.O.N.E.D.) - Send notifications to Discord, Telegram, Google Chats, Teams, and Slack from the command line."
+arch=('any')
+url="https://github.com/JRCLARK25/doned"
+license=('GPL2')
+depends=('bash' 'curl')
+source=("doned::https://github.com/JRCLARK25/doned/raw/main/discord-notifier/usr/local/bin/doned" "notify-discord::https://github.com/JRCLARK25/doned/raw/main/discord-notifier/usr/local/bin/notify-discord" "README.md::https://raw.githubusercontent.com/JRCLARK25/doned/main/README.md")
+sha256sums=('SKIP' 'SKIP' 'SKIP')
+
+package() {
+  install -Dm755 "$srcdir/${pkgname}-${pkgver}/discord-notifier/usr/local/bin/doned" "$pkgdir/usr/bin/doned"
+  install -Dm755 "$srcdir/${pkgname}-${pkgver}/discord-notifier/usr/local/bin/notify-discord" "$pkgdir/usr/bin/notify-discord"
+  install -Dm644 "$srcdir/${pkgname}-${pkgver}/README.md" "$pkgdir/usr/share/doc/${pkgname}/README.md"
+}

@@ -1,6 +1,12 @@
 # Ignore build and packaging output
 rpmbuild/
 discord-notifier/
+build/
+BUILD/
+BUILDROOT/
+SOURCES/
+SPECS/
+SRPMS/
 *.deb
 *.rpm
 !binaries/*.deb
