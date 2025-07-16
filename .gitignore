@@ -11,3 +11,5 @@ SRPMS/
 *.rpm
 !binaries/*.deb
 !binaries/*.rpm
+# Do not ignore aur/ directory (needed for Arch users)
+!aur/

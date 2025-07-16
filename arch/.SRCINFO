@@ -1,0 +1,16 @@
+# Maintainer: JRCLARK25 <your.email@example.com>
+
+pkgname = doned
+pkgver = 1.0
+pkgrel = 1
+desc = Discord & Others Notification Engine Damnit (D.O.N.E.D.)
+url = https://github.com/JRCLARK25/doned
+arch = any
+license = GPL2
+depend = bash curl
+source = doned::https://github.com/JRCLARK25/doned/raw/main/discord-notifier/usr/local/bin/doned
+source = notify-discord::https://github.com/JRCLARK25/doned/raw/main/discord-notifier/usr/local/bin/notify-discord
+source = README.md::https://raw.githubusercontent.com/JRCLARK25/doned/main/README.md
+sha256sums = SKIP
+sha256sums = SKIP
+sha256sums = SKIP
