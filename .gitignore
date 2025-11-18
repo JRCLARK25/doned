@@ -1,6 +1,5 @@
 # Ignore build and packaging output
 rpmbuild/
-discord-notifier/
 build/
 BUILD/
 BUILDROOT/

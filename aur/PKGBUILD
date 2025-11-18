@@ -10,7 +10,7 @@ arch=('any')
 url="https://github.com/JRCLARK25/doned"
 license=('GPL2')
 depends=('bash' 'curl')
-source=("doned::https://github.com/JRCLARK25/doned/raw/main/discord-notifier/usr/local/bin/doned" "notify-discord::https://github.com/JRCLARK25/doned/raw/main/discord-notifier/usr/local/bin/notify-discord" "README.md::https://raw.githubusercontent.com/JRCLARK25/doned/main/README.md")
+source=("doned::https://github.com/JRCLARK25/doned/raw/main/discord-notifier/usr/bin/doned" "notify-discord::https://github.com/JRCLARK25/doned/raw/main/discord-notifier/usr/bin/notify-discord" "README.md::https://raw.githubusercontent.com/JRCLARK25/doned/main/README.md")
 sha256sums=('SKIP' 'SKIP' 'SKIP')
 
 package() {
