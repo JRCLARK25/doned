@@ -1,8 +1,29 @@
 #!/bin/bash
 set -euo pipefail
 
-CONFIG_FILE="/etc/done.conf"
-[ -f "$CONFIG_FILE" ] && source "$CONFIG_FILE"
+expand_path() {
+  local path=$1
+  case "$path" in
+    "~") printf '%s\n' "$HOME" ;;
+    "~/"*) printf '%s\n' "${HOME}/${path#~/}" ;;
+    *) printf '%s\n' "$path" ;;
+  esac
+}
+
+SYSTEM_CONFIG="/etc/done.conf"
+USER_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/doned/done.conf"
+
+if [ -n "${DONED_CONFIG:-}" ]; then
+  CONFIG_FILE=$(expand_path "$DONED_CONFIG")
+elif [ "$(id -u)" -eq 0 ]; then
+  CONFIG_FILE="$SYSTEM_CONFIG"
+elif [ -r "$SYSTEM_CONFIG" ] && [ ! -f "$USER_CONFIG" ]; then
+  CONFIG_FILE="$SYSTEM_CONFIG"
+else
+  CONFIG_FILE="$USER_CONFIG"
+fi
+
+[ -f "$CONFIG_FILE" ] && [ -r "$CONFIG_FILE" ] && source "$CONFIG_FILE"
 
 MESSAGE="${1:-✅ Task complete on $(hostname)}"
 

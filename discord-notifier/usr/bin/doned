@@ -110,7 +110,7 @@ send_discord() {
     echo "notify-discord helper not found in PATH." >&2
     return 1
   fi
-  "$helper" "$1"
+  DONED_CONFIG="$CONFIG_FILE" "$helper" "$1"
 }
 
 send_telegram() {
