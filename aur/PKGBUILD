@@ -1,9 +1,9 @@
-# Maintainer: Your Name <your.email@example.com>
+# Maintainer: John Clark <johnrandallclark25@gmail.com>
 # Contributor: 
 pkgname=doned
 gitname=doned
 descname="Discord & Others Notification Engine Damnit"
-pkgver=1.0
+pkgver=1.1
 pkgrel=1
 pkgdesc="Send notifications to Discord, Telegram, Google Chats, Teams, and Slack from the command line."
 arch=('any')

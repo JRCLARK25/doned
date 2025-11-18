@@ -26,5 +26,5 @@ install -m 0755 %{SOURCE1} %{buildroot}/usr/bin/notify-discord
 /usr/bin/notify-discord
 
 %changelog
-* Tue Jul 15 2025 Your Name <you@example.com> - 1.0-1
+* Tue Jul 15 2025 John Clark <johnrandallclark25@gmail.com> - 1.0-1
 - Initial RPM release
