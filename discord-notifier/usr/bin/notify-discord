@@ -10,15 +10,10 @@ expand_path() {
   esac
 }
 
-SYSTEM_CONFIG="/etc/done.conf"
 USER_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/doned/done.conf"
 
 if [ -n "${DONED_CONFIG:-}" ]; then
   CONFIG_FILE=$(expand_path "$DONED_CONFIG")
-elif [ "$(id -u)" -eq 0 ]; then
-  CONFIG_FILE="$SYSTEM_CONFIG"
-elif [ -r "$SYSTEM_CONFIG" ] && [ ! -f "$USER_CONFIG" ]; then
-  CONFIG_FILE="$SYSTEM_CONFIG"
 else
   CONFIG_FILE="$USER_CONFIG"
 fi

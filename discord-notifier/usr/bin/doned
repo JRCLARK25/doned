@@ -10,23 +10,13 @@ expand_path() {
   esac
 }
 
-DEFAULT_SYSTEM_CONFIG="/etc/done.conf"
 DEFAULT_USER_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/doned"
 DEFAULT_USER_CONFIG="$DEFAULT_USER_CONFIG_DIR/done.conf"
 
 if [ -n "${DONED_CONFIG:-}" ]; then
   CONFIG_FILE=$(expand_path "$DONED_CONFIG")
-elif [ "$(id -u)" -eq 0 ]; then
-  CONFIG_FILE="$DEFAULT_SYSTEM_CONFIG"
-elif [ -r "$DEFAULT_SYSTEM_CONFIG" ]; then
-  CONFIG_FILE="$DEFAULT_SYSTEM_CONFIG"
 else
   CONFIG_FILE="$DEFAULT_USER_CONFIG"
-fi
-
-CONFIG_SCOPE="system"
-if [ "$CONFIG_FILE" != "$DEFAULT_SYSTEM_CONFIG" ]; then
-  CONFIG_SCOPE="user"
 fi
 
 DEFAULT_NOTIFY_SCRIPT="/usr/bin/notify-discord"
@@ -196,15 +186,13 @@ install_config_secure() {
   local target_dir
   target_dir=$(dirname "$CONFIG_FILE")
 
-  if [ "$CONFIG_SCOPE" = "user" ]; then
+  if [[ "$CONFIG_FILE" == "$DEFAULT_USER_CONFIG" ]] || [[ "$CONFIG_FILE" == "$HOME/"* ]] || [[ "$CONFIG_FILE" == "$HOME"* ]]; then
     mkdir -p "$target_dir"
     chmod 700 "$target_dir"
   fi
 
   local have_access=0
   if [ "$(id -u)" -eq 0 ]; then
-    have_access=1
-  elif [ "$CONFIG_SCOPE" = "user" ]; then
     have_access=1
   elif [ -e "$CONFIG_FILE" ] && [ -w "$CONFIG_FILE" ]; then
     have_access=1
@@ -227,11 +215,6 @@ install_config_secure() {
 }
 
 setup_config() {
-  if [ "$CONFIG_SCOPE" = "system" ] && [ "$(id -u)" -ne 0 ]; then
-    echo "NOTE: $CONFIG_FILE is a system-wide config and typically requires sudo." >&2
-    echo "      Re-run with sudo for shared settings, or set DONED_CONFIG=~/.config/doned/done.conf for per-user secrets." >&2
-  fi
-
   if [ -f "$CONFIG_FILE" ]; then
     echo "WARNING: $CONFIG_FILE already exists."
     read -r -p "Overwrite configuration? (y/N): " confirm

@@ -52,12 +52,10 @@ yay -S doned
 
 ### Setup
 
-Run the setup command to configure your notification services:
+Run the setup command (no sudo needed) to configure your notification services:
 ```bash
 doned setup
 ```
-- Run it **without** `sudo` to keep credentials private under your home directory.
-- Run it with `sudo` only if you want to manage a shared `/etc/done.conf`.
 - Select one or more services (Discord, Telegram, Google Chats, Teams, Slack)
 - Enter the required webhook URLs or tokens
 
@@ -121,7 +119,7 @@ doned status
 
 ### Configuration Locations
 
-When you run `doned` as a regular user, configuration is stored at `~/.config/doned/done.conf`. Running `doned` with `sudo` (or as root) keeps the system-wide config in `/etc/done.conf`. You can override the location entirely by exporting `DONED_CONFIG=/path/to/done.conf` before running any `doned` command.
+Configuration is stored at `~/.config/doned/done.conf` by default. To use a different file (for example, a shared path managed by root), export `DONED_CONFIG=/path/to/done.conf` before running `doned` commands. Keep those files readable only by trusted users; the CLI does not modify `/etc/done.conf` unless you explicitly point `DONED_CONFIG` there.
 
 Configuration files include:
 - NOTIFY_TYPES: Array of enabled services
